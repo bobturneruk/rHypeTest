@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+runtime: shiny
+---
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+
+```{r}
+inputPanel(
+
+  numericInput("mean_A", label = "Mean of group A:",
+              value = 10),
+
+  numericInput("mean_B", label = "Mean of group B:",
+              value = 15),
+  
+  numericInput("standard_deviation", label = "Standard deviation",
+              value = 2),
+  
+  numericInput("n_points", label = "Number of points in each group:",
+              value = 3)
+  
+)
+```
+
+
+```{r}
+
+#Simulate data
+simulation<-reactive({
+  
+  rbind(
+    data.frame(Group="A",Value=rnorm(n = input$n_points,
+               mean = input$mean_A,
+               sd=input$standard_deviation)),
+    data.frame(Group="B",Value=rnorm(n = input$n_points,
+               mean = input$mean_B,
+               sd=input$standard_deviation))
+    )
+  
+})
+
+
+```
+
+
+
+```{r}
+set.seed(1)
+  
+
+
+renderPlot({
+  
+  plot_data<-simulation()
+  
+  #Plot data
+  
+  ggplot(plot_data,aes(x=Group,y=Value,colour=Group))+
+    stat_summary(fun.y = mean, geom = "bar") + 
+    stat_summary(fun.data = mean_se, geom = "errorbar")+
+    geom_jitter(width=0.1)
+  
+})
+
+renderPrint({
+  #Run tests
+  
+  test_data<-simulation()
+  
+  #head(test_data)
+  
+  #t_test_output<-
+  t.test(Value~Group,data=test_data)
+  #typeof(t_test_output)
+})
+```
+
