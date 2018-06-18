@@ -4,27 +4,47 @@ output: html_notebook
 runtime: shiny
 ---
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
 library(tidyverse)
+library(broom)
+
 ```
 
 
 ```{r}
 inputPanel(
+  
+  numericInput("random_seed", label = "Random seed:",
+              value = 1, step = 1),
+  
+  numericInput("n_points", label = "Number of points in each group:",
+              value = 3),
+  
+  checkboxInput("equal_variances", label="Equal variances:")
+  
+)
+
+inputPanel(
 
   numericInput("mean_A", label = "Mean of group A:",
               value = 10),
+  
+  numericInput("standard_deviation_A", label = "Standard deviation of group A:",
+              value = 2)
+)
 
+inputPanel(
   numericInput("mean_B", label = "Mean of group B:",
               value = 15),
   
-  numericInput("standard_deviation", label = "Standard deviation",
-              value = 2),
-  
-  numericInput("n_points", label = "Number of points in each group:",
-              value = 3)
-  
+  numericInput("standard_deviation_B", label = "Standard deviation of group B:",
+              value = 5)
 )
+
+
 ```
 
 
@@ -33,13 +53,15 @@ inputPanel(
 #Simulate data
 simulation<-reactive({
   
+  set.seed(input$random_seed)
+  
   rbind(
     data.frame(Group="A",Value=rnorm(n = input$n_points,
                mean = input$mean_A,
-               sd=input$standard_deviation)),
+               sd=input$standard_deviation_A)),
     data.frame(Group="B",Value=rnorm(n = input$n_points,
                mean = input$mean_B,
-               sd=input$standard_deviation))
+               sd=input$standard_deviation_B))
     )
   
 })
@@ -50,9 +72,6 @@ simulation<-reactive({
 
 
 ```{r}
-set.seed(1)
-  
-
 
 renderPlot({
   
@@ -67,16 +86,19 @@ renderPlot({
   
 })
 
-renderPrint({
+renderTable({
   #Run tests
   
   test_data<-simulation()
   
-  #head(test_data)
-  
-  #t_test_output<-
-  t.test(Value~Group,data=test_data)
-  #typeof(t_test_output)
-})
+  t.test(Value~Group,data=test_data,var.equal=input$equal_variances) %>% 
+    tidy() %>%
+    select(estimate_mean_A=estimate1,
+           estimate_mean_b=estimate2,
+           p.value,
+           method,
+           alternative)
+
+},digits = 5)
 ```
 
