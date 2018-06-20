@@ -1,0 +1,99 @@
+---
+title: "R Notebook"
+output: html_notebook
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(broom)
+
+```
+
+#Randomisation
+When all parameters including the random seed are kept the same, the simulation results will be the same. This means we can go back to exactly the same simulated data, by remembering the random seed. If we want to re-simulate the data with the rest of the parameters kept constant, the seed can be changed.
+```{r}
+inputPanel(
+  
+  numericInput("random_seed", label = "Random seed:",
+              value = 1, step = 1)
+  
+)
+```
+
+#Shared parameters
+
+```{r}
+inputPanel(
+  
+  numericInput("n_points", label = "Number of time points:",
+              value = 6),
+  numericInput("m_points", label = "Number of measurements per time point:",
+              value = 3),
+  numericInput("sd", label = "Standard deviation of measurements:",
+              value = 3)
+  
+)
+```
+
+#Case specific parameters
+
+```{r}
+inputPanel(
+
+  numericInput("rate_A", label = "Rate of case A:",
+              value = -1),
+  
+  numericInput("intercept_A", label = "Intercept of case A:",
+              value = 2)
+)
+
+inputPanel(
+  numericInput("rate_B", label = "Rate of case B:",
+              value = -1.5),
+  
+  numericInput("intercept_B", label = "Intercept of case B:",
+              value = 2)
+)
+
+
+```
+
+
+```{r}
+
+#Simulate data
+simulation<-reactive({
+  
+  exponential<-function(t,rate,intercept){
+    return(intercept*(exp(rate*t)))
+  }
+  
+  
+  set.seed(input$random_seed)
+  
+  sim_data<-data.frame(timebase<-rep(seq(0,input$n_points-1),each=input$m_points))
+  
+  sim_data$value_case_A<-exponential(sim_data$timebase,input$rate_A,input$intercept_B)
+  
+  sim_data$error_case_A<-rnorm(n_points*m_points,sd=input$sd)
+  
+  sim_data
+  
+})
+
+
+```
+
+```{r}
+
+renderTable({
+  
+  simulation()
+
+},digits = 5)
+```
+

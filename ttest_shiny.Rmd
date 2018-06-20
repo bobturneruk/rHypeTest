@@ -87,17 +87,26 @@ renderPlot({
 })
 
 renderTable({
-  #Run tests
+  #Run t-test
   
   test_data<-simulation()
   
   t.test(Value~Group,data=test_data,var.equal=input$equal_variances) %>% 
     tidy() %>%
     select(estimate_mean_A=estimate1,
-           estimate_mean_b=estimate2,
+           estimate_mean_B=estimate2,
            p.value,
            method,
            alternative)
+
+},digits = 5)
+
+renderTable({
+  #Power calculation
+  
+  test_data<-simulation()
+  
+  power.t.test(n=input$n_points)
 
 },digits = 5)
 ```
