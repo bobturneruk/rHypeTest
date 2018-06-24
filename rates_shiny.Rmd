@@ -34,7 +34,7 @@ inputPanel(
   numericInput("m_points", label = "Number of measurements per time point:",
               value = 3),
   numericInput("sd", label = "Standard deviation of measurements:",
-              value = 3)
+              value = 1)
   
 )
 ```
@@ -45,18 +45,18 @@ inputPanel(
 inputPanel(
 
   numericInput("rate_A", label = "Rate of case A:",
-              value = -1),
+              value = -0.1),
   
   numericInput("intercept_A", label = "Intercept of case A:",
-              value = 2)
+              value = 20)
 )
 
 inputPanel(
   numericInput("rate_B", label = "Rate of case B:",
-              value = -1.5),
+              value = -0.15),
   
   numericInput("intercept_B", label = "Intercept of case B:",
-              value = 2)
+              value = 20)
 )
 
 
@@ -68,24 +68,66 @@ inputPanel(
 #Simulate data
 simulation<-reactive({
   
-  exponential<-function(t,rate,intercept){
-    return(intercept*(exp(rate*t)))
+  logarithmic<-function(t,rate,intercept){
+    return(intercept*(10^(rate*t)))
   }
   
+  mn=input$m_points*input$n_points
   
   set.seed(input$random_seed)
   
-  sim_data<-data.frame(timebase<-rep(seq(0,input$n_points-1),each=input$m_points))
   
-  sim_data$value_case_A<-exponential(sim_data$timebase,input$rate_A,input$intercept_B)
+  time_points<-seq(0,input$n_points-1) %>%
+    rep(each=input$m_points) 
   
-  sim_data$error_case_A<-rnorm(n_points*m_points,sd=input$sd)
+  case<-c(rep("case_A",times=mn),
+           rep("case_B",times=mn))
   
-  sim_data
+  value_A<-logarithmic(time_points,input$rate_A,input$intercept_A)
+  
+  value_B<-logarithmic(time_points,input$rate_B,input$intercept_B)
+  
+  error<-rnorm(input$n_points*input$m_points*2,sd=input$sd)
+
+  data.frame(time_points=c(time_points,time_points),
+             case=case,
+             value=c(value_A,value_B),
+             error=error,
+             value_error=c(value_A,value_B)+error)
   
 })
 
 
+```
+
+```{r}
+renderPlot({
+  
+  plot_data<-simulation()
+  
+  #Plot data
+  
+  ggplot(plot_data,aes(x=time_points,y=value_error,colour=case))+
+    stat_summary(fun.y = mean, geom = "line") + 
+    stat_summary(fun.data = mean_se, geom = "errorbar")+
+    scale_y_log10()
+  
+})
+```
+
+```{r}
+renderPlot({
+  
+  plot_data<-simulation()
+  
+  #Plot data
+  
+  ggplot(plot_data,aes(x=time_points,y=value_error,colour=case))+
+    geom_smooth()+
+    geom_jitter(width = 0.1)+
+    scale_y_log10()
+  
+})
 ```
 
 ```{r}
