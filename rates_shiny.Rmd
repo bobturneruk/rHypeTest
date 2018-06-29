@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
 library(broom)
+library(nlme)
 
 ```
 
@@ -76,12 +77,18 @@ simulation<-reactive({
   
   set.seed(input$random_seed)
   
-  
   time_points<-seq(0,input$n_points-1) %>%
-    rep(each=input$m_points) 
+    rep(each=input$m_points)
   
   case<-c(rep("case_A",times=mn),
            rep("case_B",times=mn))
+  
+  repeat_group<-c(
+    LETTERS[seq(1,input$m_points)] %>%
+      rep(times=input$n_points),
+    LETTERS[seq(input$m_points+1,input$m_points*2)] %>%
+      rep(times=input$n_points)
+    )
   
   value_A<-relationship(time_points,input$rate_A,input$intercept_A)
   
@@ -91,6 +98,7 @@ simulation<-reactive({
 
   data.frame(time_points=c(time_points,time_points),
              case=case,
+             repeat_group=repeat_group,
              value=c(value_A,value_B),
              error=error,
              value_error=c(value_A,value_B)+error,
@@ -145,11 +153,15 @@ renderPlot({
 })
 ```
 
+#Log transform
+
 $$y=s10^{rt}$$
 
 $$\log_{10}y=\log_{10}(s10^{rt})$$
 
 $$\log_{10}y=\log_{10}s+rt$$
+
+#Linear regression
 
 ```{r}
 
@@ -165,18 +177,13 @@ renderPrint({
 
 ```
 
-```{r}
+10^intercept is intercept_A
 
-renderPrint({
-  
-  reg_data<-simulation()
-  
-  #nls(formula=value_error~(a*10^(b*time_points)) + case, data=reg_data, start=list(a=1,b=1)) %>%
-  #  summary()
-  
-})
+time_points is rate_A
 
-```
+10^(intercept-casecase_B) is intercept_B
+
+time_points - time_points:casecase_B is rate_B
 
 ```{r}
 
