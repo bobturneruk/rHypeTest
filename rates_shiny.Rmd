@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Rates and Trends"
 output: html_notebook
 runtime: shiny
 ---
@@ -10,20 +10,12 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
 library(broom)
-library(nlme)
+library(lme4)
 
 ```
 
-#Randomisation
-When all parameters including the random seed are kept the same, the simulation results will be the same. This means we can go back to exactly the same simulated data, by remembering the random seed. If we want to re-simulate the data with the rest of the parameters kept constant, the seed can be changed.
-```{r}
-inputPanel(
-  
-  numericInput("random_seed", label = "Random seed:",
-              value = 1, step = 1)
-  
-)
-```
+#Introduction
+This note is intended to help with interpreting the results of experiments that are designed to compare rates or trends. Data is first simulated, before being modelled using linear regression.
 
 #Shared parameters
 
@@ -45,18 +37,18 @@ inputPanel(
 ```{r}
 inputPanel(
 
-  numericInput("rate_A", label = "Rate (r) of case A:",
+  numericInput("rate_A", label = "Rate of case A (r):",
               value = -0.3),
   
-  numericInput("intercept_A", label = "Intercept (s) of case A:",
+  numericInput("intercept_A", label = "Intercept of case A (s):",
               value = 20)
 )
 
 inputPanel(
-  numericInput("rate_B", label = "Rate (r) of case B:",
+  numericInput("rate_B", label = "Rate of case B (r):",
               value = -0.5),
   
-  numericInput("intercept_B", label = "Intercept (s) of case B:",
+  numericInput("intercept_B", label = "Intercept of case B (s):",
               value = 20)
 )
 
@@ -115,7 +107,7 @@ simulation<-reactive({
 
 inputPanel(
 
-  selectInput("graph_type", "Graph type:",c("Experimental science","Data science")),
+  selectInput("graph_type", "Graph type:",c("Line with errors","Scatter with trends")),
   checkboxInput("log_scale", "Log scale:", FALSE)
   
 )
@@ -129,7 +121,7 @@ renderPlot({
   
   myplot<-ggplot(plot_data,aes(x=time_points,y=value_error,colour=case))
   
-  if(input$graph_type=="Experimental science"){
+  if(input$graph_type=="Line with errors"){
     #Hopefully familiar plot
     myplot<-myplot +
       stat_summary(fun.y = mean, geom = "line") + 
@@ -165,31 +157,66 @@ $$\log_{10}y=\log_{10}s+rt$$
 
 ```{r}
 
-renderPrint({
+renderTable({
   
   reg_data<-simulation()
   
   reg_data %>%
     lm(formula=log10_value_error~time_points * case, data=.) %>%
-      summary()
+    tidy(conf.int=TRUE, conf.level=0.95) %>%
+    add_column("description"=c("Intercept of case A (s)",
+                               "Rate of case A (r)",
+                               "Difference between Intercept of case A (s) and Intercept of case B (s)",
+                               "Difference between Rate of case A (r) and Rate of case B (r)")) %>%
+    add_column("true.value"=c(input$intercept_A,
+                              input$rate_A,
+                              input$intercept_B-input$intercept_A,
+                              input$rate_B-input$rate_A)) %>%
+    select("term","description","true.value","conf.low","estimate","conf.high","p.value")
+  
+  
+  #10^intercept is intercept_A
+  #time_points is rate_A
+  #10^(intercept-casecase_B) is intercept_B
+  #time_points - time_points:casecase_B is rate_B
+  
+},digits=-5)
+
+```
+
+
+
+#Linear mixed effects
+```{r}
+
+renderPrint({
+  
+  reg_data<-simulation()
+  
+  reg_data %>%
+      lmer(formula=log10_value_error~time_points * case + (1|repeat_group), data=.) 
   
 })
 
 ```
 
-10^intercept is intercept_A
+#Randomisation
+When all parameters including the random seed are kept the same, the simulation results will be the same. This means we can go back to exactly the same simulated data, by remembering the random seed. If we want to re-simulate the data with the rest of the parameters kept constant, the seed can be changed.
+```{r}
+inputPanel(
+  
+  numericInput("random_seed", label = "Random seed:",
+              value = 1, step = 1)
+  
+)
+```
 
-time_points is rate_A
-
-10^(intercept-casecase_B) is intercept_B
-
-time_points - time_points:casecase_B is rate_B
 
 ```{r}
 
 renderTable({
   
-  simulation()
+  #simulation()
 
 },digits = 5)
 ```
