@@ -1,0 +1,61 @@
+---
+title: "Nested experiments"
+output: html_notebook
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(lme4)
+
+```
+
+##Parameters of each group
+
+```{r}
+inputPanel(
+  
+  numericInput("mean_A", label = "Mean of group A:",
+              value = 1500),
+  numericInput("mean_B", label = "Mean of group B:",
+              value = 1300)
+  
+)
+```
+
+##Shared parameters
+
+```{r}
+inputPanel(
+  
+  numericInput("n_samples", label = "Number of samples:",
+              value = 5,step=1,min=0),
+  numericInput("n_measurements", label = "Number of measurements per sample:",
+              value = 6,step=1,min=0),
+  numericInput("measurement_error", label = "Measurement error (standard deviation):",
+              value = 100,min=0),
+  numericInput("sample_variability", label = "Between-sample variability (standard deviation):",
+              value = 500,min=0)
+  
+)
+```
+
+```{r}
+
+#Simulate data
+simulation<-reactive({
+  
+  group<-c(rep("Group A",input$n_measurements*input$n_samples),
+           rep("Group A",input$n_measurements*input$n_samples))
+    
+  value<-c(rep(input$mean_A,input$n_measurements*input$n_samples),
+           rep(input$mean_B,input$n_measurements*input$n_samples))
+  
+  
+  
+})
+
+```
