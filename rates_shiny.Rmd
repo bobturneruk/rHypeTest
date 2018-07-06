@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(broom)
 library(lme4)
+library(nlme)
 
 ```
 
@@ -82,19 +83,22 @@ simulation<-reactive({
       rep(times=input$n_points)
     )
   
-  value_A<-relationship(time_points,input$rate_A,input$intercept_A)
+  repeat_error<-c(rep(rnorm(input$m_points,sd=input$sd_repeat_group),input$n_points),
+                    rep(rnorm(input$m_points,sd=input$sd_repeat_group),input$n_points))
   
-  value_B<-relationship(time_points,input$rate_B,input$intercept_B)
+  value<-c(relationship(time_points,input$rate_A,input$intercept_A),
+            relationship(time_points,input$rate_B,input$intercept_B))
   
   error<-rnorm(input$n_points*input$m_points*2,sd=input$sd)
 
   data.frame(time_points=c(time_points,time_points),
              case=case,
              repeat_group=repeat_group,
-             value=c(value_A,value_B),
+             value=value,
              error=error,
-             value_error=c(value_A,value_B)+error,
-             log10_value_error=log10(c(value_A,value_B)+error))
+             repeat_error=repeat_error,
+             value_error=value+error+repeat_error,
+             log10_value_error=log10(value+error+repeat_error))
   
 })
 
@@ -172,7 +176,7 @@ renderTable({
                               input$rate_A,
                               input$intercept_B-input$intercept_A,
                               input$rate_B-input$rate_A)) %>%
-    select("term","description","true.value","conf.low","estimate","conf.high","p.value")
+    select("term","description","true.value","estimate","conf.low","conf.high","p.value")
   
   
   #10^intercept is intercept_A
@@ -184,7 +188,37 @@ renderTable({
 
 ```
 
+To compare the estimated intercepts with the true values, raise 10 to the power of the estimate to reverse the log transform.
 
+#Handling repeated measurements of the same sample
+
+```{r}
+inputPanel(
+  
+  numericInput("sd_repeat_group", label = "Variability (standard deviation) between repeat groups:",
+              value = 0)
+)
+```
+
+```{r}
+renderPlot({
+  
+  plot_data<-simulation()
+  
+  myplot<-ggplot(plot_data,aes(x=time_points,y=value_error,colour=repeat_group))+
+    geom_smooth()+
+    geom_jitter(width = 0.1)+
+    facet_grid(~case)
+  
+  if(input$log_scale==TRUE){
+    myplot<-myplot +
+      scale_y_log10()
+  }
+  
+  myplot
+  
+})
+```
 
 #Linear mixed effects
 ```{r}
@@ -194,7 +228,8 @@ renderPrint({
   reg_data<-simulation()
   
   reg_data %>%
-      lmer(formula=log10_value_error~time_points * case + (1|repeat_group), data=.) 
+      nlme(formula=log10_value_error~time_points * case + (1|repeat_group), data=.) %>%
+      summary()
   
 })
 
@@ -216,7 +251,7 @@ inputPanel(
 
 renderTable({
   
-  #simulation()
+  simulation()
 
 },digits = 5)
 ```
