@@ -228,7 +228,7 @@ renderPrint({
   reg_data<-simulation()
   
   reg_data %>%
-      nlme(formula=log10_value_error~time_points * case + (1|repeat_group), data=.) %>%
+      lme(formula=log10_value_error~time_points * case + (1|repeat_group), data=.) %>%
       summary()
   
 })
