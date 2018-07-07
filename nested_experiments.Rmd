@@ -48,14 +48,66 @@ inputPanel(
 #Simulate data
 simulation<-reactive({
   
+  set.seed(1)
+  
   group<-c(rep("Group A",input$n_measurements*input$n_samples),
-           rep("Group A",input$n_measurements*input$n_samples))
+           rep("Group B",input$n_measurements*input$n_samples))
+  
+  sample<-LETTERS[rep(seq(2*input$n_samples),each=input$n_measurements)]
     
-  value<-c(rep(input$mean_A,input$n_measurements*input$n_samples),
+  true_value<-c(rep(input$mean_A,input$n_measurements*input$n_samples),
            rep(input$mean_B,input$n_measurements*input$n_samples))
   
+  measurement_error<-rnorm(2*input$n_measurements*input$n_samples,sd=input$measurement_error)
   
+  sample_variability<-rnorm(2*input$n_measurements*input$n_samples,sd=input$sample_variability)
+  
+  data.frame(group,sample,true_value,measurement_error,sample_variability) %>%
+    mutate(measured_value=true_value+measurement_error+sample_variability)
   
 })
 
+```
+
+##Plot
+
+```{r}
+
+renderPlot({
+
+  plot_data<-simulation()
+  
+  ggplot(plot_data,aes(x=group,y=measured_value,colour=sample,group=group))+
+    stat_summary(fun.data = mean_se, geom = "errorbar")+
+    geom_jitter()
+    
+})
+
+```
+
+
+##Linear mixed effects
+```{r}
+
+renderPrint({
+  
+  reg_data<-simulation()
+  
+  reg_data %>%
+      lmer(formula=measured_value~group+(1|sample), data=.) %>%
+      summary()
+  
+})
+
+```
+
+##Raw data
+
+```{r}
+
+renderTable({
+  
+  simulation()
+
+},digits = 5)
 ```
