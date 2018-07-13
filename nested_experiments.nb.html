@@ -179,6 +179,16 @@ $(document).ready(function () {
 <h2>Parameters of each group</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5wdXRQYW5lbChcbiAgXG4gIG51bWVyaWNJbnB1dChcIm1lYW5fQVwiLCBsYWJlbCA9IFwiTWVhbiBvZiBncm91cCBBOlwiLFxuICAgICAgICAgICAgICB2YWx1ZSA9IDE1MDApLFxuICBudW1lcmljSW5wdXQoXCJtZWFuX0JcIiwgbGFiZWwgPSBcIk1lYW4gb2YgZ3JvdXAgQjpcIixcbiAgICAgICAgICAgICAgdmFsdWUgPSAxMzAwKVxuICBcbilcbmBgYCJ9 -->
+<pre class="r"><code>inputPanel(
+  
+  numericInput(&quot;mean_A&quot;, label = &quot;Mean of group A:&quot;,
+              value = 1500),
+  numericInput(&quot;mean_B&quot;, label = &quot;Mean of group B:&quot;,
+              value = 1300)
+  
+)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -186,12 +196,108 @@ $(document).ready(function () {
 <h2>Shared parameters</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaW5wdXRQYW5lbChcbiAgXG4gIG51bWVyaWNJbnB1dChcIm5fc2FtcGxlc1wiLCBsYWJlbCA9IFwiTnVtYmVyIG9mIHNhbXBsZXM6XCIsXG4gICAgICAgICAgICAgIHZhbHVlID0gNSxzdGVwPTEsbWluPTApLFxuICBudW1lcmljSW5wdXQoXCJuX21lYXN1cmVtZW50c1wiLCBsYWJlbCA9IFwiTnVtYmVyIG9mIG1lYXN1cmVtZW50cyBwZXIgc2FtcGxlOlwiLFxuICAgICAgICAgICAgICB2YWx1ZSA9IDYsc3RlcD0xLG1pbj0wKSxcbiAgbnVtZXJpY0lucHV0KFwibWVhc3VyZW1lbnRfZXJyb3JcIiwgbGFiZWwgPSBcIk1lYXN1cmVtZW50IGVycm9yIChzdGFuZGFyZCBkZXZpYXRpb24pOlwiLFxuICAgICAgICAgICAgICB2YWx1ZSA9IDEwMCxtaW49MCksXG4gIG51bWVyaWNJbnB1dChcInNhbXBsZV92YXJpYWJpbGl0eVwiLCBsYWJlbCA9IFwiQmV0d2Vlbi1zYW1wbGUgdmFyaWFiaWxpdHkgKHN0YW5kYXJkIGRldmlhdGlvbik6XCIsXG4gICAgICAgICAgICAgIHZhbHVlID0gNTAwLG1pbj0wKVxuICBcbilcbmBgYCJ9 -->
+<pre class="r"><code>inputPanel(
+  
+  numericInput(&quot;n_samples&quot;, label = &quot;Number of samples:&quot;,
+              value = 5,step=1,min=0),
+  numericInput(&quot;n_measurements&quot;, label = &quot;Number of measurements per sample:&quot;,
+              value = 6,step=1,min=0),
+  numericInput(&quot;measurement_error&quot;, label = &quot;Measurement error (standard deviation):&quot;,
+              value = 100,min=0),
+  numericInput(&quot;sample_variability&quot;, label = &quot;Between-sample variability (standard deviation):&quot;,
+              value = 500,min=0)
+  
+)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jU2ltdWxhdGUgZGF0YVxuc2ltdWxhdGlvbjwtcmVhY3RpdmUoe1xuICBcbiAgc2V0LnNlZWQoMSlcbiAgXG4gIGdyb3VwPC1jKHJlcChcIkdyb3VwIEFcIixpbnB1dCRuX21lYXN1cmVtZW50cyppbnB1dCRuX3NhbXBsZXMpLFxuICAgICAgICAgICByZXAoXCJHcm91cCBCXCIsaW5wdXQkbl9tZWFzdXJlbWVudHMqaW5wdXQkbl9zYW1wbGVzKSlcbiAgXG4gIHNhbXBsZTwtTEVUVEVSU1tyZXAoc2VxKDIqaW5wdXQkbl9zYW1wbGVzKSxlYWNoPWlucHV0JG5fbWVhc3VyZW1lbnRzKV1cbiAgICBcbiAgdHJ1ZV92YWx1ZTwtYyhyZXAoaW5wdXQkbWVhbl9BLGlucHV0JG5fbWVhc3VyZW1lbnRzKmlucHV0JG5fc2FtcGxlcyksXG4gICAgICAgICAgIHJlcChpbnB1dCRtZWFuX0IsaW5wdXQkbl9tZWFzdXJlbWVudHMqaW5wdXQkbl9zYW1wbGVzKSlcbiAgXG4gIG1lYXN1cmVtZW50X2Vycm9yPC1ybm9ybSgyKmlucHV0JG5fbWVhc3VyZW1lbnRzKmlucHV0JG5fc2FtcGxlcyxzZD1pbnB1dCRtZWFzdXJlbWVudF9lcnJvcilcbiAgXG4gIHNhbXBsZV92YXJpYWJpbGl0eTwtcm5vcm0oMippbnB1dCRuX21lYXN1cmVtZW50cyppbnB1dCRuX3NhbXBsZXMsc2Q9aW5wdXQkc2FtcGxlX3ZhcmlhYmlsaXR5KVxuICBcbiAgZGF0YS5mcmFtZShncm91cCxzYW1wbGUsdHJ1ZV92YWx1ZSxtZWFzdXJlbWVudF9lcnJvcixzYW1wbGVfdmFyaWFiaWxpdHkpICU+JVxuICAgIG11dGF0ZShtZWFzdXJlZF92YWx1ZT10cnVlX3ZhbHVlK21lYXN1cmVtZW50X2Vycm9yK3NhbXBsZV92YXJpYWJpbGl0eSlcbiAgXG59KVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+#Simulate data
+simulation&lt;-reactive({
+  
+  set.seed(1)
+  
+  group&lt;-c(rep(&quot;Group A&quot;,input$n_measurements*input$n_samples),
+           rep(&quot;Group B&quot;,input$n_measurements*input$n_samples))
+  
+  sample&lt;-LETTERS[rep(seq(2*input$n_samples),each=input$n_measurements)]
+    
+  true_value&lt;-c(rep(input$mean_A,input$n_measurements*input$n_samples),
+           rep(input$mean_B,input$n_measurements*input$n_samples))
+  
+  measurement_error&lt;-rnorm(2*input$n_measurements*input$n_samples,sd=input$measurement_error)
+  
+  sample_variability&lt;-rnorm(2*input$n_measurements*input$n_samples,sd=input$sample_variability)
+  
+  data.frame(group,sample,true_value,measurement_error,sample_variability) %&gt;%
+    mutate(measured_value=true_value+measurement_error+sample_variability)
+  
+})
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="section-plot" class="section level2">
+<h2>Plot</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZW5kZXJQbG90KHtcblxuICBwbG90X2RhdGE8LXNpbXVsYXRpb24oKVxuICBcbiAgZ2dwbG90KHBsb3RfZGF0YSxhZXMoeD1ncm91cCx5PW1lYXN1cmVkX3ZhbHVlLGNvbG91cj1zYW1wbGUsZ3JvdXA9Z3JvdXApKStcbiAgICBzdGF0X3N1bW1hcnkoZnVuLmRhdGEgPSBtZWFuX3NlLCBnZW9tID0gXCJlcnJvcmJhclwiKStcbiAgICBnZW9tX2ppdHRlcigpXG4gICAgXG59KVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+renderPlot({
+
+  plot_data&lt;-simulation()
+  
+  ggplot(plot_data,aes(x=group,y=measured_value,colour=sample,group=group))+
+    stat_summary(fun.data = mean_se, geom = &quot;errorbar&quot;)+
+    geom_jitter()
+    
+})
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="section-linear-mixed-effects" class="section level2">
+<h2>Linear mixed effects</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZW5kZXJQcmludCh7XG4gIFxuICByZWdfZGF0YTwtc2ltdWxhdGlvbigpXG4gIFxuICByZWdfZGF0YSAlPiVcbiAgICAgIGxtZXIoZm9ybXVsYT1tZWFzdXJlZF92YWx1ZX5ncm91cCsoMXxzYW1wbGUpLCBkYXRhPS4pICU+JVxuICAgICAgc3VtbWFyeSgpXG4gIFxufSlcblxuYGBgIn0= -->
+<pre class="r"><code>
+renderPrint({
+  
+  reg_data&lt;-simulation()
+  
+  reg_data %&gt;%
+      lmer(formula=measured_value~group+(1|sample), data=.) %&gt;%
+      summary()
+  
+})
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="section-raw-data" class="section level2">
+<h2>Raw data</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5yZW5kZXJUYWJsZSh7XG4gIFxuICBzaW11bGF0aW9uKClcblxufSxkaWdpdHMgPSA1KVxuYGBgIn0= -->
+<pre class="r"><code>
+renderTable({
+  
+  simulation()
+
+},digits = 5)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIk5lc3RlZCBleHBlcmltZW50cyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KcnVudGltZTogc2hpbnkNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0NCg0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UpDQoNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShsbWU0KQ0KDQpgYGANCg0KIyNQYXJhbWV0ZXJzIG9mIGVhY2ggZ3JvdXANCg0KYGBge3J9DQppbnB1dFBhbmVsKA0KICANCiAgbnVtZXJpY0lucHV0KCJtZWFuX0EiLCBsYWJlbCA9ICJNZWFuIG9mIGdyb3VwIEE6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSAxNTAwKSwNCiAgbnVtZXJpY0lucHV0KCJtZWFuX0IiLCBsYWJlbCA9ICJNZWFuIG9mIGdyb3VwIEI6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSAxMzAwKQ0KICANCikNCmBgYA0KDQojI1NoYXJlZCBwYXJhbWV0ZXJzDQoNCmBgYHtyfQ0KaW5wdXRQYW5lbCgNCiAgDQogIG51bWVyaWNJbnB1dCgibl9zYW1wbGVzIiwgbGFiZWwgPSAiTnVtYmVyIG9mIHNhbXBsZXM6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA1LHN0ZXA9MSxtaW49MCksDQogIG51bWVyaWNJbnB1dCgibl9tZWFzdXJlbWVudHMiLCBsYWJlbCA9ICJOdW1iZXIgb2YgbWVhc3VyZW1lbnRzIHBlciBzYW1wbGU6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA2LHN0ZXA9MSxtaW49MCksDQogIG51bWVyaWNJbnB1dCgibWVhc3VyZW1lbnRfZXJyb3IiLCBsYWJlbCA9ICJNZWFzdXJlbWVudCBlcnJvciAoc3RhbmRhcmQgZGV2aWF0aW9uKToiLA0KICAgICAgICAgICAgICB2YWx1ZSA9IDEwMCxtaW49MCksDQogIG51bWVyaWNJbnB1dCgic2FtcGxlX3ZhcmlhYmlsaXR5IiwgbGFiZWwgPSAiQmV0d2Vlbi1zYW1wbGUgdmFyaWFiaWxpdHkgKHN0YW5kYXJkIGRldmlhdGlvbik6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA1MDAsbWluPTApDQogIA0KKQ0KYGBgDQoNCg0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIk5lc3RlZCBleHBlcmltZW50cyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KcnVudGltZTogc2hpbnkNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0NCg0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UpDQoNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShsbWU0KQ0KDQpgYGANCg0KIyNQYXJhbWV0ZXJzIG9mIGVhY2ggZ3JvdXANCg0KYGBge3J9DQppbnB1dFBhbmVsKA0KICANCiAgbnVtZXJpY0lucHV0KCJtZWFuX0EiLCBsYWJlbCA9ICJNZWFuIG9mIGdyb3VwIEE6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSAxNTAwKSwNCiAgbnVtZXJpY0lucHV0KCJtZWFuX0IiLCBsYWJlbCA9ICJNZWFuIG9mIGdyb3VwIEI6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSAxMzAwKQ0KICANCikNCmBgYA0KDQojI1NoYXJlZCBwYXJhbWV0ZXJzDQoNCmBgYHtyfQ0KaW5wdXRQYW5lbCgNCiAgDQogIG51bWVyaWNJbnB1dCgibl9zYW1wbGVzIiwgbGFiZWwgPSAiTnVtYmVyIG9mIHNhbXBsZXM6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA1LHN0ZXA9MSxtaW49MCksDQogIG51bWVyaWNJbnB1dCgibl9tZWFzdXJlbWVudHMiLCBsYWJlbCA9ICJOdW1iZXIgb2YgbWVhc3VyZW1lbnRzIHBlciBzYW1wbGU6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA2LHN0ZXA9MSxtaW49MCksDQogIG51bWVyaWNJbnB1dCgibWVhc3VyZW1lbnRfZXJyb3IiLCBsYWJlbCA9ICJNZWFzdXJlbWVudCBlcnJvciAoc3RhbmRhcmQgZGV2aWF0aW9uKToiLA0KICAgICAgICAgICAgICB2YWx1ZSA9IDEwMCxtaW49MCksDQogIG51bWVyaWNJbnB1dCgic2FtcGxlX3ZhcmlhYmlsaXR5IiwgbGFiZWwgPSAiQmV0d2Vlbi1zYW1wbGUgdmFyaWFiaWxpdHkgKHN0YW5kYXJkIGRldmlhdGlvbik6IiwNCiAgICAgICAgICAgICAgdmFsdWUgPSA1MDAsbWluPTApDQogIA0KKQ0KYGBgDQoNCmBgYHtyfQ0KDQojU2ltdWxhdGUgZGF0YQ0Kc2ltdWxhdGlvbjwtcmVhY3RpdmUoew0KICANCiAgc2V0LnNlZWQoMSkNCiAgDQogIGdyb3VwPC1jKHJlcCgiR3JvdXAgQSIsaW5wdXQkbl9tZWFzdXJlbWVudHMqaW5wdXQkbl9zYW1wbGVzKSwNCiAgICAgICAgICAgcmVwKCJHcm91cCBCIixpbnB1dCRuX21lYXN1cmVtZW50cyppbnB1dCRuX3NhbXBsZXMpKQ0KICANCiAgc2FtcGxlPC1MRVRURVJTW3JlcChzZXEoMippbnB1dCRuX3NhbXBsZXMpLGVhY2g9aW5wdXQkbl9tZWFzdXJlbWVudHMpXQ0KICAgIA0KICB0cnVlX3ZhbHVlPC1jKHJlcChpbnB1dCRtZWFuX0EsaW5wdXQkbl9tZWFzdXJlbWVudHMqaW5wdXQkbl9zYW1wbGVzKSwNCiAgICAgICAgICAgcmVwKGlucHV0JG1lYW5fQixpbnB1dCRuX21lYXN1cmVtZW50cyppbnB1dCRuX3NhbXBsZXMpKQ0KICANCiAgbWVhc3VyZW1lbnRfZXJyb3I8LXJub3JtKDIqaW5wdXQkbl9tZWFzdXJlbWVudHMqaW5wdXQkbl9zYW1wbGVzLHNkPWlucHV0JG1lYXN1cmVtZW50X2Vycm9yKQ0KICANCiAgc2FtcGxlX3ZhcmlhYmlsaXR5PC1ybm9ybSgyKmlucHV0JG5fbWVhc3VyZW1lbnRzKmlucHV0JG5fc2FtcGxlcyxzZD1pbnB1dCRzYW1wbGVfdmFyaWFiaWxpdHkpDQogIA0KICBkYXRhLmZyYW1lKGdyb3VwLHNhbXBsZSx0cnVlX3ZhbHVlLG1lYXN1cmVtZW50X2Vycm9yLHNhbXBsZV92YXJpYWJpbGl0eSkgJT4lDQogICAgbXV0YXRlKG1lYXN1cmVkX3ZhbHVlPXRydWVfdmFsdWUrbWVhc3VyZW1lbnRfZXJyb3Irc2FtcGxlX3ZhcmlhYmlsaXR5KQ0KICANCn0pDQoNCmBgYA0KDQojI1Bsb3QNCg0KYGBge3J9DQoNCnJlbmRlclBsb3Qoew0KDQogIHBsb3RfZGF0YTwtc2ltdWxhdGlvbigpDQogIA0KICBnZ3Bsb3QocGxvdF9kYXRhLGFlcyh4PWdyb3VwLHk9bWVhc3VyZWRfdmFsdWUsY29sb3VyPXNhbXBsZSxncm91cD1ncm91cCkpKw0KICAgIHN0YXRfc3VtbWFyeShmdW4uZGF0YSA9IG1lYW5fc2UsIGdlb20gPSAiZXJyb3JiYXIiKSsNCiAgICBnZW9tX2ppdHRlcigpDQogICAgDQp9KQ0KDQpgYGANCg0KDQojI0xpbmVhciBtaXhlZCBlZmZlY3RzDQpgYGB7cn0NCg0KcmVuZGVyUHJpbnQoew0KICANCiAgcmVnX2RhdGE8LXNpbXVsYXRpb24oKQ0KICANCiAgcmVnX2RhdGEgJT4lDQogICAgICBsbWVyKGZvcm11bGE9bWVhc3VyZWRfdmFsdWV+Z3JvdXArKDF8c2FtcGxlKSwgZGF0YT0uKSAlPiUNCiAgICAgIHN1bW1hcnkoKQ0KICANCn0pDQoNCmBgYA0KDQojI1JhdyBkYXRhDQoNCmBgYHtyfQ0KDQpyZW5kZXJUYWJsZSh7DQogIA0KICBzaW11bGF0aW9uKCkNCg0KfSxkaWdpdHMgPSA1KQ0KYGBg</div>
 
 
 

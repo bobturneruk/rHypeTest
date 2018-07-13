@@ -9,18 +9,19 @@ runtime: shiny
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 library(tidyverse)
-library(lme4)
+#library(lme4)
+library(nlme)
 
 ```
 
-##Parameters of each group
+##Parameters of each case
 
 ```{r}
 inputPanel(
   
-  numericInput("mean_A", label = "Mean of group A:",
+  numericInput("mean_A", label = "Mean of case A:",
               value = 1500),
-  numericInput("mean_B", label = "Mean of group B:",
+  numericInput("mean_B", label = "Mean of case B:",
               value = 1300)
   
 )
@@ -35,10 +36,10 @@ inputPanel(
               value = 5,step=1,min=0),
   numericInput("n_measurements", label = "Number of measurements per sample:",
               value = 6,step=1,min=0),
-  numericInput("measurement_error", label = "Measurement error (standard deviation):",
-              value = 100,min=0),
   numericInput("sample_variability", label = "Between-sample variability (standard deviation):",
-              value = 500,min=0)
+              value = 500,min=0),
+  numericInput("measurement_error", label = "Measurement error (standard deviation):",
+              value = 100,min=0)
   
 )
 ```
@@ -50,8 +51,8 @@ simulation<-reactive({
   
   set.seed(1)
   
-  group<-c(rep("Group A",input$n_measurements*input$n_samples),
-           rep("Group B",input$n_measurements*input$n_samples))
+  case<-c(rep("case A",input$n_measurements*input$n_samples),
+           rep("case B",input$n_measurements*input$n_samples))
   
   sample<-LETTERS[rep(seq(2*input$n_samples),each=input$n_measurements)]
     
@@ -60,9 +61,9 @@ simulation<-reactive({
   
   measurement_error<-rnorm(2*input$n_measurements*input$n_samples,sd=input$measurement_error)
   
-  sample_variability<-rnorm(2*input$n_measurements*input$n_samples,sd=input$sample_variability)
+  sample_variability<-rep(rnorm(input$n_samples,sd=input$sample_variability),each=input$n_measurements)
   
-  data.frame(group,sample,true_value,measurement_error,sample_variability) %>%
+  data.frame(case,sample,true_value,measurement_error,sample_variability) %>%
     mutate(measured_value=true_value+measurement_error+sample_variability)
   
 })
@@ -77,7 +78,7 @@ renderPlot({
 
   plot_data<-simulation()
   
-  ggplot(plot_data,aes(x=group,y=measured_value,colour=sample,group=group))+
+  ggplot(plot_data,aes(x=case,y=measured_value,colour=sample,group=case))+
     stat_summary(fun.data = mean_se, geom = "errorbar")+
     geom_jitter()
     
@@ -85,6 +86,25 @@ renderPlot({
 
 ```
 
+##Linear
+
+Here, I feed the means for each sample into the model.
+
+```{r}
+
+renderPrint({
+  
+  reg_data<-simulation()
+  
+  reg_data %>%
+    group_by(case,sample) %>%
+    summarise(measured_value=mean(measured_value)) %>%
+    lm(formula=measured_value~case, data=.) %>%
+    summary()
+  
+})
+
+```
 
 ##Linear mixed effects
 ```{r}
@@ -94,7 +114,7 @@ renderPrint({
   reg_data<-simulation()
   
   reg_data %>%
-      lmer(formula=measured_value~group+(1|sample), data=.) %>%
+      lme(measured_value~case,random=~1|sample, data=.) %>%
       summary()
   
 })
